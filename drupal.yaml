@@ -33,10 +33,10 @@ spec:
             runAsUser: 0
           resources:
             requests:
-              cpu: 500m
+              cpu: 300m
               memory: 3000Mi
             limits:
-              cpu: 700m
+              cpu: 500m
               memory: 5000Mi
 #          volumeMounts:
 #            - name: profiles
