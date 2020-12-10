@@ -1,7 +1,7 @@
 pipeline {
 
   environment {
-    registry = "172.16.0.109:31320/postfixadmin"
+    registry = "172.16.0.109:31320/drupal"
     dockerImage = ""
   }
 
@@ -39,7 +39,7 @@ pipeline {
       agent { label 'kubepod' }
       steps {
         script {
-          kubernetesDeploy(configs: "postfixadmin.yaml", kubeconfigId: "mykubeconfig")
+          kubernetesDeploy(configs: "drupal.yaml", kubeconfigId: "mykubeconfig")
         }
       }
     }

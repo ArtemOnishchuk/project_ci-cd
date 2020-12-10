@@ -1,0 +1,94 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: drupal
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drupal
+  namespace: drupal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drupal
+  template:
+    metadata:
+      labels:
+        app: drupal
+    spec:
+      hostAliases:
+      - ip: "172.16.0.111"
+        hostnames:
+        - "postgres"
+      containers:
+        - name: drupal
+          image: 172.16.0.109:31320/drupal:1
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 80
+          securityContext:
+            runAsUser: 0
+          resources:
+            requests:
+              cpu: 500m
+              memory: 3000Mi
+            limits:
+              cpu: 700m
+              memory: 5000Mi
+#          volumeMounts:
+#            - name: profiles
+#              mountPath: /opt/drupal/web/profiles
+#            - name: modules
+#              mountPath: /opt/drupal/web/modules
+#            - name: sites
+#              mountPath: /opt/drupal/web/sites
+#            - name: themes
+#              mountPath: /opt/drupal/web/themes
+#      volumes:
+#        - name: profiles 
+#          nfs:
+#            server: 172.16.0.108
+#            path: /home/nfs/ArtemOnishchuk/drupal/profiles
+#        - name: modules
+#          nfs:
+#            server: 172.16.0.108
+#            path: /home/nfs/ArtemOnishchuk/drupal/modules
+#        - name: sites
+#          nfs:
+#            server: 172.16.0.108
+#            path: /home/nfs/ArtemOnishchuk/drupal/sites
+#        - name: themes
+#          nfs:
+#            server: 172.16.0.108
+#            path: /home/nfs/ArtemOnishchuk/drupal/themes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  drupal-serv
+  namespace: drupal
+spec:
+  ports:
+    - name: master
+      port: 80
+      targetPort: 80
+  selector:
+    app: drupal
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: drupal
+  name: ingress-drupal
+spec:
+  rules:
+  - host: drupal.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: drupal-serv
+          servicePort: 80
