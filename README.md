@@ -52,6 +52,7 @@ PostfixAdmin is a web based interface used to manage mailboxes, virtual domains 
 ```yml
 postfixadmin:
   environment:
+
     FETCHMAIL_EXTRA_OPTIONS="smtp localhost/10025"
 ```
 
