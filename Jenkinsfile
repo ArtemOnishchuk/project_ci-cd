@@ -12,7 +12,7 @@ pipeline {
     stage('Checkout Source') {
       steps {
         
-        git 'https://github.com/ArtemOnishchuk/project_ci/cd.git'
+        git 'https://github.com/ArtemOnishchuk/project_ci-cd.git'
       }
     }
 
