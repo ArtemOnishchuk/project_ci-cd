@@ -45,5 +45,15 @@ pipeline {
     }
 
   }
+    post {
+        success {
+            slackSend (color: '#00FF00', message: "[SUCCESS] Job: ${env.JOB_NAME} ID: ${env.BUILD_ID} URL: ${env.BUILD_URL}")
+        }
+
+        failure {
+            slackSend (color: '#FF0000', message: "[FAILURE] Job: ${env.JOB_NAME} ID: ${env.BUILD_ID} URL: ${env.BUILD_URL}")
+        }
+    
+    }
 
 }
