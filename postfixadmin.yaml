@@ -25,7 +25,7 @@ spec:
         - "postgres"
       containers:
         - name: postfixadmin
-          image: 172.16.0.109:31320/postfixadmin:1
+          image: 172.16.0.109:31320/postfixadmin:5
           imagePullPolicy: IfNotPresent
           env:
             - name: DBDRIVER
