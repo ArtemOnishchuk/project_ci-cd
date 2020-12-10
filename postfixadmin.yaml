@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postfixadmin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postfixadmin
+  namespace: postfixadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postfixadmin
+  template:
+    metadata:
+      labels:
+        app: postfixadmin
+    spec:
+      hostAliases:
+      - ip: "172.16.0.111"
+        hostnames:
+        - "postgres"
+      containers:
+        - name: postfixadmin
+          image: 172.16.0.109:31320/postfixadmin:1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DBDRIVER
+              value: pgsql
+            - name: DBHOST
+              value: postgres
+            - name: DBPORT
+              value: 5432
+            - name: DBPASS
+              value: postfix
+          ports:
+          - containerPort: 8888
+          securityContext:
+            runAsUser: 0
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 3000Mi
+            limits:
+              cpu: 1200m
+              memory: 5000Mi
+#          volumeMounts:
+#            - name: docker-sock
+#              mountPath: /var/run
+#            - name: jenkins-config-yaml
+#              mountPath: /var/jenkins_home/casc_configs/jenkins.yaml
+#              subPath: jenkins.yaml
+#            - name: jenkins-home
+#              mountPath: /var/jenkins_home
+#      volumes:
+#        - name: docker-sock
+#          hostPath:
+#            path: /var/run
+#        - name: jenkins-auth-config
+#          configMap:
+#            name: basic-security
+#        - name: jenkins-config-yaml
+#          configMap:
+#            name: jenkins-config
+#        - name: jenkins-home
+#          nfs:
+#            server: 172.16.0.108
+#            path: /home/nfs/ArtemOnishchuk/jenkins
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  postfixadmin-serv
+  namespace: postfixadmin
+spec:
+  type: NodePort
+  ports:
+    - name: master
+      port: 8888
+      targetPort: 8888
+      nodePort: 314444
+  selector:
+    app: postfixadmin
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: postfixadmin
+  name: ingress-postfixadmin
+spec:
+  rules:
+  - host: postfixadmin.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: postfixadmin-serv
+          servicePort: 8888
