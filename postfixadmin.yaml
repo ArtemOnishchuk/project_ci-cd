@@ -81,7 +81,7 @@ spec:
     - name: master
       port: 8888
       targetPort: 8888
-      nodePort: 314444
+      nodePort: 31444
   selector:
     app: postfixadmin
 ---
