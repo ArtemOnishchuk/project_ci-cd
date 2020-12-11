@@ -25,7 +25,7 @@ spec:
         - "postgres"
       containers:
         - name: drupal
-          image: 172.16.0.109:31320/drupal:12
+          image: 172.16.0.109:31320/drupal:1
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 80
@@ -39,8 +39,6 @@ spec:
               cpu: 500m
               memory: 5000Mi
           volumeMounts:
-#            - name: profiles
-#              mountPath: /var/www/html
             - name: modules
               mountPath: /opt/drupal/web/modules
             - name: files
@@ -48,10 +46,6 @@ spec:
             - name: themes
               mountPath: /opt/drupal/web/themes
       volumes:
-#        - name: profiles 
-#          nfs:
-#            server: 172.16.0.108
-#            path: /home/nfs/ArtemOnishchuk/drupal
         - name: modules
           nfs:
             server: 172.16.0.108
