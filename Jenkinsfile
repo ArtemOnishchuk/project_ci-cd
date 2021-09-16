@@ -17,6 +17,7 @@ pipeline {
     }
 
     stage('Build image') {
+      agent { label 'kubepod' }
       steps {  
         script {
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
@@ -26,6 +27,7 @@ pipeline {
     }
 
     stage('Push Image') {
+      agent { label 'kubepod' }
       steps{
         script {
           docker.withRegistry( "" ) {
