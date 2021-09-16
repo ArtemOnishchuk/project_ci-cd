@@ -10,6 +10,7 @@ pipeline {
   stages {
 
     stage('Checkout Source') {
+      agent { label 'kubepod' }
       steps {
         
         git 'https://github.com/ArtemOnishchuk/project_ci-cd.git'
